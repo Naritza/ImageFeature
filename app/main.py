@@ -1,9 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 import cv2
 import numpy as np
 app = FastAPI()
 import base64
-from code import gethog
+from app.code import gethog
 
 
 def readb64(encoded_data):
@@ -22,8 +22,9 @@ def read_root():
 
 
 @app.get("/api/gethog")
-def read_str(item_str):
-   
+async def read_str(data: Request):
+    json = await data.json()
+    item_str = json["img"]
     img = readb64(item_str)
     hog = gethog(img)
     return {"message": hog}
